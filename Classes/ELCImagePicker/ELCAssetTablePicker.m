@@ -19,8 +19,6 @@
 
 @implementation ELCAssetTablePicker
 
-//Using auto synthesizers
-
 - (id)init
 {
     self = [super init];
@@ -40,13 +38,15 @@
     NSMutableArray *tempArray = [[NSMutableArray alloc] init];
     self.elcAssets = tempArray;
 	
-    if (self.immediateReturn) {
-        
+    UIBarButtonItem *item = nil;
+    if ([self immediateReturn]) {
+        item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self.parent action:@selector(cancelAssetSelection)];
     } else {
-        UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction:)];
-        [self.navigationItem setRightBarButtonItem:doneButtonItem];
-        [self.navigationItem setTitle:NSLocalizedString(@"Loading...", nil)];
+        item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction:)];
     }
+    
+    [self.navigationItem setRightBarButtonItem:item];
+    [self.navigationItem setTitle:NSLocalizedStringFromTable(@"albumpicker.loading", @"elc-image", @"Loading...")];
 
 	[self performSelectorInBackground:@selector(preparePhotos) withObject:nil];
     
@@ -69,7 +69,7 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    return YES;
+    return toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight;
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
@@ -119,11 +119,22 @@
                                                       animated:NO];
             }
             
-            [self.navigationItem setTitle:self.singleSelection ? NSLocalizedString(@"Pick Photo", nil) : NSLocalizedString(@"Pick Photos", nil)];
+            if ([self singleSelection]) {
+                [self.navigationItem setTitle:NSLocalizedStringFromTable(@"albumpicker.pick_photo", @"elc-image", @"Pick Photo")];
+            } else {
+                [self.navigationItem setTitle:NSLocalizedStringFromTable(@"albumpicker.pick_photos", @"elc-image", @"Pick Photos")];
+            }
         });
     }
 }
 
+- (BOOL)singleSelection {
+    return [self.parent isSingleSelection];
+}
+
+- (BOOL)immediateReturn {
+    return [self singleSelection];
+}
 
 - (void)doneAction:(id)sender
 {	
@@ -156,7 +167,7 @@
 
 - (void)assetSelected:(ELCAsset *)asset
 {
-    if (self.singleSelection) {
+    if ([self singleSelection]) {
 
         for (ELCAsset *elcAsset in self.elcAssets) {
             if (asset != elcAsset) {
@@ -164,7 +175,7 @@
             }
         }
     }
-    if (self.immediateReturn) {
+    if ([self immediateReturn]) {
         NSArray *singleAssetArray = @[asset];
         [(NSObject *)self.parent performSelector:@selector(selectedAssets:) withObject:singleAssetArray afterDelay:0];
     }
@@ -172,7 +183,7 @@
 
 - (BOOL)shouldDeselectAsset:(ELCAsset *)asset
 {
-    if (self.immediateReturn){
+    if ([self immediateReturn]) {
         return NO;
     }
     return YES;
@@ -180,7 +191,7 @@
 
 - (void)assetDeselected:(ELCAsset *)asset
 {
-    if (self.singleSelection) {
+    if ([self singleSelection]) {
         for (ELCAsset *elcAsset in self.elcAssets) {
             if (asset != elcAsset) {
                 elcAsset.selected = NO;
@@ -188,12 +199,12 @@
         }
     }
 
-    if (self.immediateReturn) {
+    if ([self immediateReturn]) {
         NSArray *singleAssetArray = @[asset.asset];
         [(NSObject *)self.parent performSelector:@selector(selectedAssets:) withObject:singleAssetArray afterDelay:0];
     }
     
-    int numOfSelectedElements = [[ELCConsole mainConsole] numOfSelectedElements];
+    NSInteger numOfSelectedElements = [[ELCConsole mainConsole] numOfSelectedElements];
     if (asset.index < numOfSelectedElements - 1) {
         NSMutableArray *arrayOfCellsToReload = [[NSMutableArray alloc] initWithCapacity:1];
         
@@ -256,6 +267,7 @@
         cell = [[ELCAssetCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
+    cell.shouldUseOverlay = ![self singleSelection];
     [cell setAssets:[self assetsForIndexPath:indexPath]];
     
     return cell;

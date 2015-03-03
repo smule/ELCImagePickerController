@@ -12,11 +12,16 @@
 {
     NSMutableArray *myIndex;
 }
+
 @property (nonatomic,assign) BOOL onOrder;
+
 + (ELCConsole *)mainConsole;
-- (void)addIndex:(int)index;
-- (void)removeIndex:(int)index;
-- (int)currIndex;
-- (int)numOfSelectedElements;
+
+- (void)addIndex:(NSInteger)index;
+- (void)removeIndex:(NSInteger)index;
 - (void)removeAllIndex;
+
+- (NSInteger)currIndex;
+- (NSInteger)numOfSelectedElements;
+
 @end

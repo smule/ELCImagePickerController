@@ -20,8 +20,6 @@
 
 @implementation ELCAssetCell
 
-//Using auto synthesizers
-
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
@@ -46,13 +44,8 @@
 	for (UIImageView *view in _imageViewArray) {
         [view removeFromSuperview];
 	}
-    for (ELCOverlayImageView *view in _overlayViewArray) {
-        [view removeFromSuperview];
-	}
-    //set up a pointer here so we don't keep calling [UIImage imageNamed:] if creating overlays
-    UIImage *overlayImage = nil;
+    
     for (int i = 0; i < [_rowAssets count]; ++i) {
-
         ELCAsset *asset = [_rowAssets objectAtIndex:i];
 
         if (i < [_imageViewArray count]) {
@@ -62,11 +55,28 @@
             UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:asset.asset.thumbnail]];
             [_imageViewArray addObject:imageView];
         }
+    }
+    
+    if (self.shouldUseOverlay) {
+        [self updateOverlays];
+    }
+}
+
+- (void)updateOverlays {
+    //set up a pointer here so we don't keep calling [UIImage imageNamed:] if creating overlays
+    UIImage *overlayImage = nil;
+    
+    for (ELCOverlayImageView *view in _overlayViewArray) {
+        [view removeFromSuperview];
+    }
+    
+    for (int i = 0; i < [_rowAssets count]; ++i) {
+        ELCAsset *asset = [_rowAssets objectAtIndex:i];
         
         if (i < [_overlayViewArray count]) {
             ELCOverlayImageView *overlayView = [_overlayViewArray objectAtIndex:i];
             overlayView.hidden = asset.selected ? NO : YES;
-            overlayView.labIndex.text = [NSString stringWithFormat:@"%d", asset.index + 1];
+            overlayView.labIndex.text = [NSString stringWithFormat:@"%ld", (long)asset.index + 1];
         } else {
             if (overlayImage == nil) {
                 overlayImage = [UIImage imageNamed:@"Overlay.png"];
@@ -74,7 +84,7 @@
             ELCOverlayImageView *overlayView = [[ELCOverlayImageView alloc] initWithImage:overlayImage];
             [_overlayViewArray addObject:overlayView];
             overlayView.hidden = asset.selected ? NO : YES;
-            overlayView.labIndex.text = [NSString stringWithFormat:@"%d", asset.index + 1];
+            overlayView.labIndex.text = [NSString stringWithFormat:@"%ld", (long)asset.index + 1];
         }
     }
 }
@@ -88,7 +98,7 @@
     
     if (self.alignmentLeft) {
         startX = 4;
-    }else {
+    } else {
         startX = (self.bounds.size.width - totalWidth) / 2;
     }
     
@@ -98,16 +108,20 @@
         if (CGRectContainsPoint(frame, point)) {
             ELCAsset *asset = [_rowAssets objectAtIndex:i];
             asset.selected = !asset.selected;
-            ELCOverlayImageView *overlayView = [_overlayViewArray objectAtIndex:i];
+            
+            ELCOverlayImageView *overlayView = nil;
+            if (_shouldUseOverlay) {
+                overlayView = [_overlayViewArray objectAtIndex:i];
+            }
             overlayView.hidden = !asset.selected;
+            
             if (asset.selected) {
                 asset.index = [[ELCConsole mainConsole] numOfSelectedElements];
                 [overlayView setIndex:asset.index+1];
                 [[ELCConsole mainConsole] addIndex:asset.index];
             }
-            else
-            {
-                int lastElement = [[ELCConsole mainConsole] numOfSelectedElements] - 1;
+            else {
+                NSInteger lastElement = [[ELCConsole mainConsole] numOfSelectedElements] - 1;
                 [[ELCConsole mainConsole] removeIndex:lastElement];
             }
             break;
@@ -135,9 +149,11 @@
 		[imageView setFrame:frame];
 		[self addSubview:imageView];
         
-        ELCOverlayImageView *overlayView = [_overlayViewArray objectAtIndex:i];
-        [overlayView setFrame:frame];
-        [self addSubview:overlayView];
+        if (_shouldUseOverlay) {
+            ELCOverlayImageView *overlayView = [_overlayViewArray objectAtIndex:i];
+            [overlayView setFrame:frame];
+            [self addSubview:overlayView];
+        }
 		
 		frame.origin.x = frame.origin.x + frame.size.width + 4;
 	}

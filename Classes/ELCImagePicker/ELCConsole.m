@@ -34,14 +34,14 @@ static ELCConsole *_mainconsole;
     _mainconsole = nil;
 }
 
-- (void)addIndex:(int)index
+- (void)addIndex:(NSInteger)index
 {
     if (![myIndex containsObject:@(index)]) {
         [myIndex addObject:@(index)];
     }
 }
 
-- (void)removeIndex:(int)index
+- (void)removeIndex:(NSInteger)index
 {
     [myIndex removeObject:@(index)];
 }
@@ -51,20 +51,20 @@ static ELCConsole *_mainconsole;
     [myIndex removeAllObjects];
 }
 
-- (int)currIndex
+- (NSInteger)currIndex
 {
     [myIndex sortUsingSelector:@selector(compare:)];
     
-    for (int i = 0; i < [myIndex count]; i++) {
+    for (NSInteger i = 0; i < [myIndex count]; i++) {
         int c = [[myIndex objectAtIndex:i] intValue];
         if (c != i) {
             return i;
         }
     }
-    return (int)[myIndex count];
+    return [myIndex count];
 }
 
-- (int)numOfSelectedElements {
+- (NSInteger)numOfSelectedElements {
     
     return [myIndex count];
 }

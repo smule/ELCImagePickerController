@@ -19,9 +19,9 @@
     return self;
 }
 
-- (void)setIndex:(int)_index
+- (void)setIndex:(NSInteger)_index
 {
-    self.labIndex.text = [NSString stringWithFormat:@"%d",_index];
+    self.labIndex.text = [NSString stringWithFormat:@"%ld", (long)_index];
 }
 
 - (void)dealloc

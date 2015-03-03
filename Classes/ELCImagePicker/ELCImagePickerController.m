@@ -17,20 +17,24 @@
 
 @implementation ELCImagePickerController
 
-//Using auto synthesizers
-
-- (id)initImagePicker
+- (id)initImagePickerWithDelegate:(id<ELCImagePickerControllerDelegate>)delegate
 {
     ELCAlbumPickerController *albumPicker = [[ELCAlbumPickerController alloc] initWithStyle:UITableViewStylePlain];
-    
     self = [super initWithRootViewController:albumPicker];
+    
     if (self) {
-        self.maximumImagesCount = 4;
+        self.imagePickerDelegate = delegate;
+        
         self.returnsImage = YES;
+        self.maximumImagesCount = 4;
         self.returnsOriginalImage = YES;
-        [albumPicker setParent:self];
+        
+        self.onOrder = NO;
         self.mediaTypes = @[(NSString *)kUTTypeImage, (NSString *)kUTTypeMovie];
+        
+        [albumPicker setParent:self];
     }
+    
     return self;
 }
 
@@ -60,11 +64,13 @@
     return self.albumPicker.mediaTypes;
 }
 
-- (void)cancelImagePicker
+- (void)cancelAssetSelection
 {
-	if ([_imagePickerDelegate respondsToSelector:@selector(elcImagePickerControllerDidCancel:)]) {
-		[_imagePickerDelegate performSelector:@selector(elcImagePickerControllerDidCancel:) withObject:self];
-	}
+    [_imagePickerDelegate elcImagePickerControllerDidCancel:self];
+}
+
+- (BOOL)isSingleSelection {
+    return self.maximumImagesCount <= 1;
 }
 
 - (BOOL)shouldSelectAsset:(ELCAsset *)asset previousCount:(NSUInteger)previousCount
@@ -82,7 +88,7 @@
     return shouldSelect;
 }
 
-- (BOOL)shouldDeselectAsset:(ELCAsset *)asset previousCount:(NSUInteger)previousCount;
+- (BOOL)shouldDeselectAsset:(ELCAsset *)asset previousCount:(NSUInteger)previousCount
 {
     return YES;
 }
@@ -118,7 +124,7 @@
             
                 if (_returnsOriginalImage) {
                     imgRef = [assetRep fullResolutionImage];
-                    orientation = [assetRep orientation];
+                    orientation = (UIImageOrientation)[assetRep orientation];
                 } else {
                     imgRef = [assetRep fullScreenImage];
                 }
@@ -128,26 +134,19 @@
                 [workingDictionary setObject:img forKey:UIImagePickerControllerOriginalImage];
             }
 
-            [workingDictionary setObject:[[asset valueForProperty:ALAssetPropertyURLs] valueForKey:[[[asset valueForProperty:ALAssetPropertyURLs] allKeys] objectAtIndex:0]] forKey:UIImagePickerControllerReferenceURL];
+            [workingDictionary setObject:[[asset valueForProperty:ALAssetPropertyURLs] valueForKey:[[[asset valueForProperty:ALAssetPropertyURLs] allKeys] objectAtIndex:0]] forKey:UIImagePickerControllerMediaURL];
             
             [returnArray addObject:workingDictionary];
         }
 		
-	}    
-	if (_imagePickerDelegate != nil && [_imagePickerDelegate respondsToSelector:@selector(elcImagePickerController:didFinishPickingMediaWithInfo:)]) {
-		[_imagePickerDelegate performSelector:@selector(elcImagePickerController:didFinishPickingMediaWithInfo:) withObject:self withObject:returnArray];
-	} else {
-        [self popToRootViewControllerAnimated:NO];
-    }
+	}
+    
+	[_imagePickerDelegate elcImagePickerController:self didFinishPickingMediaWithInfo:returnArray];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return YES;
-    } else {
-        return toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
-    }
+    return toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight;
 }
 
 - (BOOL)onOrder

@@ -11,6 +11,7 @@
 @interface ELCAssetCell : UITableViewCell
 
 @property (nonatomic, assign) BOOL alignmentLeft;
+@property (nonatomic, assign) BOOL shouldUseOverlay;
 
 - (void)setAssets:(NSArray *)assets;
 

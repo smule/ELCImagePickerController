@@ -10,10 +10,9 @@
 
 @implementation ELCAsset
 
-//Using auto synthesizers
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"ELCAsset index:%d",self.index];
+    return [NSString stringWithFormat:@"ELCAsset index:%ld", (long)self.index];
 }
 
 - (id)initWithAsset:(ALAsset*)asset

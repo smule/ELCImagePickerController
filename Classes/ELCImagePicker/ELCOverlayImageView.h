@@ -12,6 +12,6 @@
 
 @property (nonatomic, strong) UILabel *labIndex;
 
-- (void)setIndex:(int)_index;
+- (void)setIndex:(NSInteger)_index;
 
 @end
