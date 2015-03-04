@@ -32,6 +32,8 @@
 
 @interface ELCImagePickerController : UINavigationController <ELCAssetSelectionDelegate>
 
++(NSBundle *)bundle;
+
 @property (nonatomic, weak) id<ELCImagePickerControllerDelegate> imagePickerDelegate;
 @property (nonatomic, assign) NSInteger maximumImagesCount;
 @property (nonatomic, assign) BOOL onOrder;

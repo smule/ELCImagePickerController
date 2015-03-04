@@ -24,8 +24,8 @@
 {
     [super viewDidLoad];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-	
-	[self.navigationItem setTitle:NSLocalizedStringFromTable(@"albumpicker.loading", @"elc-image", @"Loading...")];
+
+	[self.navigationItem setTitle:NSLocalizedStringWithDefaultValue(@"loading", nil, [ELCImagePickerController bundle], @"Loading...", nil)];
 
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self.parent action:@selector(cancelAssetSelection)];
 	[self.navigationItem setRightBarButtonItem:cancelButton];
@@ -67,12 +67,28 @@
             void (^assetGroupEnumberatorFailure)(NSError *) = ^(NSError *error) {
               
                 if ([ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusDenied) {
-                    NSString *errorMessage = NSLocalizedString(@"This app does not have access to your photos or videos. You can enable access in Privacy Settings.", nil);
-                    [[[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"albumpicker.access_denied", @"elc-image", @"Access Denied") message:errorMessage delegate:nil cancelButtonTitle:NSLocalizedString(@"Ok", nil) otherButtonTitles:nil] show];
+                    NSString *errorMessage = NSLocalizedStringWithDefaultValue(@"no_access",
+                            nil, 
+                            [ELCImagePickerController bundle], 
+                            @"This app does not have access to your photos or videos. You can enable access in Privacy Settings.", 
+                            nil);
+                    NSString *title = NSLocalizedStringWithDefaultValue(@"access_denied", nil, [ELCImagePickerController bundle], @"Access Denied", nil);
+                    NSString *ok = NSLocalizedStringWithDefaultValue(@"ok", nil, [ELCImagePickerController bundle], @"OK", nil);
+                    [[[UIAlertView alloc] initWithTitle:title
+                                                message:errorMessage
+                                               delegate:nil
+                                      cancelButtonTitle:ok
+                                      otherButtonTitles:nil] show];
                   
                 } else {
+                    NSString *title = NSLocalizedStringWithDefaultValue(@"error", nil, [ELCImagePickerController bundle], @"Error", nil);
                     NSString *errorMessage = [NSString stringWithFormat:@"Album Error: %@ - %@", [error localizedDescription], [error localizedRecoverySuggestion]];
-                    [[[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"albumpicker.error", @"elc-image", @"Error") message:errorMessage delegate:nil cancelButtonTitle:NSLocalizedStringFromTable(@"albumpicker.ok", @"elc-image", @"OK") otherButtonTitles:nil] show];
+                    NSString *ok = NSLocalizedStringWithDefaultValue(@"ok", nil, [ELCImagePickerController bundle], @"OK", nil);
+                    [[[UIAlertView alloc] initWithTitle:title
+                                                message:errorMessage
+                                               delegate:nil
+                                      cancelButtonTitle:ok
+                                      otherButtonTitles:nil] show];
                 }
 
                 [self.navigationItem setTitle:nil];
@@ -103,7 +119,8 @@
 - (void)reloadTableView
 {
 	[self.tableView reloadData];
-	[self.navigationItem setTitle:NSLocalizedStringFromTable(@"albumpicker.photos", @"elc-image", @"Photos")];
+    NSString *title = NSLocalizedStringWithDefaultValue(@"photos", nil, [ELCImagePickerController bundle], @"Photos", nil);
+	[self.navigationItem setTitle:title];
 }
 
 - (BOOL)shouldSelectAsset:(ELCAsset *)asset previousCount:(NSUInteger)previousCount
@@ -203,8 +220,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	ELCAssetTablePicker *picker = [[ELCAssetTablePicker alloc] initWithNibName: nil bundle: nil];
-	picker.parent = self;
+	ELCAssetTablePicker *picker = [[ELCAssetTablePicker alloc] initWithStyle:UITableViewStylePlain];
+    picker.parent = self;
 
     picker.assetGroup = [self.assetGroups objectAtIndex:indexPath.row];
     [picker.assetGroup setAssetsFilter:[self assetFilter]];

@@ -1,0 +1,11 @@
+
+"loading" = "Loading...";
+"no_access" = "This app does not have access to your photos or videos. You can enable access in Privacy Settings.";
+"access_denied" = "Access Denied";
+"ok" = "OK";
+"error" = "Error";
+"photos" = "Photos";
+"pick_photo" = "Pick Photo";
+"pick_photos" = "Pick Photos";
+"only_n_photos" = "Only %ld photos please!";
+"only_n_at_a_time" = "You can only select %ld photos at a time.";

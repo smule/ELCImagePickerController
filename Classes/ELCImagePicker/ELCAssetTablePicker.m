@@ -10,6 +10,7 @@
 #import "ELCAsset.h"
 #import "ELCAlbumPickerController.h"
 #import "ELCConsole.h"
+#import "ELCImagePickerController.h"
 
 @interface ELCAssetTablePicker ()
 
@@ -46,7 +47,7 @@
     }
     
     [self.navigationItem setRightBarButtonItem:item];
-    [self.navigationItem setTitle:NSLocalizedStringFromTable(@"albumpicker.loading", @"elc-image", @"Loading...")];
+    [self.navigationItem setTitle:NSLocalizedStringWithDefaultValue(@"loading", nil, [ELCImagePickerController bundle], @"Loading...", nil)];
 
 	[self performSelectorInBackground:@selector(preparePhotos) withObject:nil];
     
@@ -120,9 +121,9 @@
             }
             
             if ([self singleSelection]) {
-                [self.navigationItem setTitle:NSLocalizedStringFromTable(@"albumpicker.pick_photo", @"elc-image", @"Pick Photo")];
+                [self.navigationItem setTitle:NSLocalizedStringWithDefaultValue(@"pick_photo", nil, [ELCImagePickerController bundle], @"Pick Photo", nil)];
             } else {
-                [self.navigationItem setTitle:NSLocalizedStringFromTable(@"albumpicker.pick_photos", @"elc-image", @"Pick Photos")];
+                [self.navigationItem setTitle:NSLocalizedStringWithDefaultValue(@"pick_photos", nil, [ELCImagePickerController bundle], @"Pick Photos", nil)];
             }
         });
     }

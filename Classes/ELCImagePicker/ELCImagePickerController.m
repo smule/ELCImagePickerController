@@ -17,6 +17,17 @@
 
 @implementation ELCImagePickerController
 
++(NSBundle *)bundle
+{
+    static NSBundle *bundle;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^
+    {
+        bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ELCImagePickerController" ofType:@"bundle"]];
+    });
+    return bundle;
+}
+
 - (id)initImagePickerWithDelegate:(id<ELCImagePickerControllerDelegate>)delegate
 {
     ELCAlbumPickerController *albumPicker = [[ELCAlbumPickerController alloc] initWithStyle:UITableViewStylePlain];
@@ -77,13 +88,16 @@
 {
     BOOL shouldSelect = previousCount < self.maximumImagesCount;
     if (!shouldSelect) {
-        NSString *title = [NSString stringWithFormat:NSLocalizedString(@"Only %d photos please!", nil), self.maximumImagesCount];
-        NSString *message = [NSString stringWithFormat:NSLocalizedString(@"You can only send %d photos at a time.", nil), self.maximumImagesCount];
+        NSString *format = NSLocalizedStringWithDefaultValue(@"only_n_photos", nil, [ELCImagePickerController bundle], @"Only %ld photos please!", nil);
+        NSString *title = [NSString stringWithFormat:format, (long)self.maximumImagesCount];
+        format = NSLocalizedStringWithDefaultValue(@"only_n_at_a_time", nil, [ELCImagePickerController bundle], @"You can only select %ld photos at a time.", nil);
+        NSString *message = [NSString stringWithFormat:format, (long)self.maximumImagesCount];
+        NSString *ok = NSLocalizedStringWithDefaultValue(@"ok", nil, [ELCImagePickerController bundle], @"OK", nil);
         [[[UIAlertView alloc] initWithTitle:title
                                     message:message
                                    delegate:nil
                           cancelButtonTitle:nil
-                          otherButtonTitles:NSLocalizedString(@"Okay", nil), nil] show];
+                          otherButtonTitles:ok, nil] show];
     }
     return shouldSelect;
 }

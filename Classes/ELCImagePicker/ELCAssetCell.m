@@ -9,6 +9,7 @@
 #import "ELCAsset.h"
 #import "ELCConsole.h"
 #import "ELCOverlayImageView.h"
+#import "ELCImagePickerController.h"
 
 @interface ELCAssetCell ()
 
@@ -79,7 +80,7 @@
             overlayView.labIndex.text = [NSString stringWithFormat:@"%ld", (long)asset.index + 1];
         } else {
             if (overlayImage == nil) {
-                overlayImage = [UIImage imageNamed:@"Overlay.png"];
+                overlayImage = [UIImage imageNamed:@"Overlay.png" inBundle:[ELCImagePickerController bundle] compatibleWithTraitCollection:nil];
             }
             ELCOverlayImageView *overlayView = [[ELCOverlayImageView alloc] initWithImage:overlayImage];
             [_overlayViewArray addObject:overlayView];
