@@ -1,0 +1,11 @@
+
+"loading" = "Cargando...";
+"no_access" = "Esta aplicación no tiene acceso a tus fotos o vídeos. Puedes permitir el acceso en los ajustes de privacidad.";
+"access_denied" = "Acceso denegado";
+"ok" = "Aceptar";
+"error" = "Error";
+"photos" = "Fotos";
+"pick_photo" = "Elegir foto";
+"pick_photos" = "Elegir fotos";
+"only_n_photos" = "Solo %ld fotos.";
+"only_n_at_a_time" = "Solo se pueden seleccionar %ld fotos al mismo tiempo.";

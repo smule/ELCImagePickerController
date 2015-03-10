@@ -1,0 +1,11 @@
+
+"loading" = "正在加载...";
+"no_access" = "这款应用程序无法访问你的照片或视频。你可以在隐私设置中授权其访问。";
+"access_denied" = "拒绝访问";
+"ok" = "好";
+"error" = "错误";
+"photos" = "照片";
+"pick_photo" = "选择照片";
+"pick_photos" = "选择照片";
+"only_n_photos" = "限选 %ld 张照片！";
+"only_n_at_a_time" = "你一次只能选择 %ld 张照片。";

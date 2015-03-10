@@ -1,0 +1,11 @@
+
+"loading" = "불러오는 중...";
+"no_access" = "앱에 사진 또는 동영상에 대한 접근 권한이 필요합니다. 개인 정보 보호 메뉴에서 설정해주세요.";
+"access_denied" = "접근이 거부되었습니다";
+"ok" = "확인";
+"error" = "오류";
+"photos" = "사진";
+"pick_photo" = "사진 선택";
+"pick_photos" = "사진 선택";
+"only_n_photos" = "최대 %ld장의 사진만 가능!";
+"only_n_at_a_time" = "최대 %ld장의 사진만 선택 가능합니다.";

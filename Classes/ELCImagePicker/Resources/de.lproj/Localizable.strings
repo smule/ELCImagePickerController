@@ -1,0 +1,11 @@
+
+"loading" = "Wird geladen...";
+"no_access" = "Diese App hat keinen Zugriff auf deine Fotos oder Videos. Du kannst den Zugriff in den Datenschutzeinstellungen gestatten.";
+"access_denied" = "Zugriff verweigert";
+"ok" = "O. K.";
+"error" = "Fehler";
+"photos" = "Fotos";
+"pick_photo" = "Foto auswählen";
+"pick_photos" = "Fotos auswählen";
+"only_n_photos" = "Bitte nur %ld Fotos!";
+"only_n_at_a_time" = "Du kannst nur jeweils %ld Fotos auswählen.";
